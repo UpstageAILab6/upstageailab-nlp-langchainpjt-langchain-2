@@ -5,7 +5,7 @@ from langchain_upstage import UpstageEmbeddings
 from dotenv import load_dotenv
 import os
 
-
+load_dotenv()
 
 # 단계 1: 문서 로드(Load Documents)
 loader = PDFPlumberLoader("./data/★ 2024 노무관리 가이드 북.pdf")
