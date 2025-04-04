@@ -4,7 +4,7 @@ from langchain_upstage import ChatUpstage
 from operator import itemgetter
 from dotenv import load_dotenv
 import os
-import vector_store
+import retriever
 from chat_history import *
 
 # API 키 정보 로드
@@ -36,7 +36,7 @@ llm = ChatUpstage(api_key=os.getenv('API_KEY'), model="solar-pro")
 # 단계 8: 체인(Chain) 생성
 chain = (
     {
-        "context": itemgetter("question") | vector_store.retriever,
+        "context": itemgetter("question") | retriever.retriever,
         "question": itemgetter("question"),
         "chat_history": itemgetter("chat_history"),
     }

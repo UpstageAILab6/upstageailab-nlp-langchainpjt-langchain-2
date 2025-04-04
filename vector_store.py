@@ -1,5 +1,5 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import PDFPlumberLoader
+from langchain_community.document_loaders import PyMuPDFLoader
 from langchain_community.vectorstores import FAISS
 from langchain_upstage import UpstageEmbeddings
 from dotenv import load_dotenv
@@ -8,7 +8,7 @@ import os
 load_dotenv()
 
 # 단계 1: 문서 로드(Load Documents)
-loader = PDFPlumberLoader("./data/★ 2024 노무관리 가이드 북.pdf")
+loader = PyMuPDFLoader("./data/★ 2024 노무관리 가이드 북.pdf")
 docs = loader.load()
 
 # 단계 2: 문서 분할(Split Documents)
@@ -25,11 +25,6 @@ embeddings = UpstageEmbeddings(
 # 벡터스토어를 생성합니다.
 vectorstore = FAISS.from_documents(documents=split_documents, embedding=embeddings)
 
-# 단계 5: 검색기(Retriever) 생성
-# 문서에 포함되어 있는 정보를 검색하고 생성합니다.
-retriever = vectorstore.as_retriever()
-
-
-__all__ = ["retriever"]  # 외부에서 사용할 수 있도록 추가
+__all__ = ["vectorstore"]  # 외부에서 사용할 수 있도록 추가
 
 
