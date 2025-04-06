@@ -1,1 +1,52 @@
+<<<<<<< HEAD
 .env
+=======
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+
+# Environment variables
+.env
+
+# VSCode settings (if you're using VSCode)
+.vscode/
+
+# MacOS system files
+.DS_Store
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# PyCharm
+.idea/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Cache
+.cache/
+*.sqlite3
+
+# FAISS index files
+*.faiss
+*.index
+*.pkl
+faiss_index/
+faiss_store/
+
+# LangChain vectorstore persistence
+chroma/
+db/
+persist/
+
+# Pytest cache
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+>>>>>>> bfe289e (add function base code)
