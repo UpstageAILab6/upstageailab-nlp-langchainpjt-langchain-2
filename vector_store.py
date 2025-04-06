@@ -19,6 +19,34 @@ class VectorStoreManager:
 
     def _initialize(self):
         try:
+            self.load_vectorstore()
+        except Exception as e:
+            logger.error(f"Failed to initialize vector store: {str(e)}")
+            logger.info("Creating new vector store")
+            self.make_vectorstore()
+
+    def load_vectorstore(self):
+        logger.info("Loading FAISS vector store")
+        try:
+            logger.info("Creating embeddings")
+            embeddings = UpstageEmbeddings(
+                api_key=Config.API_KEY,
+                model=Config.EMBEDDING_MODEL
+            )
+            logger.info("Load FAISS vector store")
+            self.vectorstore = FAISS.load_local(
+                folder_path="faiss_db",
+                index_name="faiss_index",
+                embeddings=embeddings,
+                allow_dangerous_deserialization=True,
+            )
+        except Exception as e:
+            logger.error(f"Failed to initialize vector store: {str(e)}")
+            raise
+        
+    def make_vectorstore(self):
+        logger.info("Creating new FAISS vector store")
+        try:
             logger.info(f"Loading document from {self.file_path}")
             loader = PyMuPDFLoader(self.file_path)
             docs = loader.load()
@@ -38,6 +66,8 @@ class VectorStoreManager:
 
             logger.info("Building FAISS vector store")
             self.vectorstore = FAISS.from_documents(documents=split_documents, embedding=embeddings)
+            self.vectorstore.save_local(folder_path="faiss_db", index_name="faiss_index")
+            logger.info("FAISS vector store saved successfully.")
         except Exception as e:
             logger.error(f"Failed to initialize vector store: {str(e)}")
             raise
@@ -47,4 +77,8 @@ class VectorStoreManager:
             raise ValueError("Vector store is not initialized.")
         return self.vectorstore
 
-__all__ = ["VectorStoreManager"]
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    vector_store_manager = VectorStoreManager()
+    vector_store = vector_store_manager.get_vectorstore()
+    logger.info("Vector store is ready for use.")
