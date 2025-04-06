@@ -1,75 +1,59 @@
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_upstage import ChatUpstage
-<<<<<<< HEAD
 from operator import itemgetter
-from dotenv import load_dotenv
-import os
-import retriever
-from chat_history import *
+import logging
+from config import Config
+from retriever import Retriever
 
-# API 키 정보 로드
-load_dotenv()
+# 로깅 설정
+logger = logging.getLogger(__name__)
 
-# 단계 6: 프롬프트 생성(Create Prompt)
-=======
-from langchain_core.runnables import RunnablePassthrough
-import utils
-import retriever
-from chat_history import *
+class LLMChain:
+    
+    def __init__(self, retriever: Retriever):
+        self.retriever = retriever.get_retriever()
+        self.chain = self._create_chain()
 
->>>>>>> bfe289e (add function base code)
-# 프롬프트를 생성합니다.
-prompt = PromptTemplate.from_template(
-    """You are an assistant for question-answering tasks.
+    def _create_prompt(self) -> PromptTemplate:
+        logger.info("Creating prompt template")
+        return PromptTemplate.from_template(
+            """You are an assistant for question-answering tasks.
 Use the following pieces of retrieved context to answer the question.
 If you don't know the answer, just say that you don't know.
 Answer in Korean.
 
-<<<<<<< HEAD
 #Previous Chat History:
 {chat_history}
 
-=======
->>>>>>> bfe289e (add function base code)
 #Question:
 {question}
 #Context:
 {context}
 
 #Answer:"""
-)
+        )
 
-<<<<<<< HEAD
-# 단계 7: 언어모델(LLM) 생성
-# 모델(LLM) 을 생성합니다.
-llm = ChatUpstage(api_key=os.getenv('API_KEY'), model="solar-pro")
+    def _create_chain(self):
+        try:
+            logger.info("Initializing LLM chain")
+            llm = ChatUpstage(api_key=Config.API_KEY, model=Config.LLM_MODEL)
+            prompt = self._create_prompt()
+            return (
+                {
+                    "context": itemgetter("question") | self.retriever,
+                    "question": itemgetter("question"),
+                    "chat_history": itemgetter("chat_history"),
+                }
+                | prompt
+                | llm
+                | StrOutputParser()
+            )
+        except Exception as e:
+            logger.error(f"Failed to create LLM chain: {str(e)}")
+            raise
 
-# 단계 8: 체인(Chain) 생성
-chain = (
-    {
-        "context": itemgetter("question") | retriever.retriever,
-        "question": itemgetter("question"),
-        "chat_history": itemgetter("chat_history"),
-    }
-    | prompt
-    | llm
-    | StrOutputParser()
-)
+    def get_chain(self):
+        return self.chain
 
-__all__ = ["chain"]
-=======
-def get_model_chain(retriever):
-    # 단계 7: 언어모델(LLM) 생성
-    # 모델(LLM) 을 생성합니다.
-    llm = ChatUpstage(api_key=utils.load_api_key(), model="solar-pro")
-
-    # 단계 8: 체인(Chain) 생성
-    chain = (
-        {"context": retriever, "question": RunnablePassthrough()}
-        | prompt
-        | llm
-        | StrOutputParser()
-    )
-    return chain
->>>>>>> bfe289e (add function base code)
+__all__ = ["LLMChain"]
