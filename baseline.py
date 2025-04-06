@@ -17,6 +17,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_upstage import ChatUpstage, UpstageEmbeddings
 
 # 단계 1: 문서 로드(Load Documents)
+# pdf 파일 다운로드 링크: https://spri.kr/posts/view/23669
 loader = PyMuPDFLoader("data/SPRI_AI_Brief_2023년12월호_F.pdf")
 docs = loader.load()
 
