@@ -1,7 +1,21 @@
-import vector_store
+import logging
+from vector_store import VectorStoreManager
 
-# 단계 5: 검색기(Retriever) 생성
-# 문서에 포함되어 있는 정보를 검색하고 생성합니다.
-retriever = vector_store.vectorstore.as_retriever()
+# 로깅 설정
+logger = logging.getLogger(__name__)
 
-__all__ = ["retriever"]  # 외부에서 사용할 수 있도록 추가
+class Retriever:
+    
+    def __init__(self, vector_store_manager: VectorStoreManager):
+        try:
+            logger.info("Initializing retriever from vector store")
+            self.retriever = vector_store_manager.get_vectorstore().as_retriever()
+        except Exception as e:
+            logger.error(f"Failed to initialize retriever: {str(e)}")
+            raise
+
+    def get_retriever(self):
+        """Retrieve the configured retriever."""
+        return self.retriever
+
+__all__ = ["Retriever"]
