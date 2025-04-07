@@ -2,6 +2,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyMuPDFLoader
 from langchain_community.vectorstores import FAISS
 from langchain_upstage import UpstageEmbeddings
+from langchain_experimental.text_splitter import SemanticChunker
 import logging
 from config import Config
 
@@ -50,22 +51,38 @@ class VectorStoreManager:
         try:
             logger.info(f"Loading document from {self.file_paths}")
 
-            text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=self.chunk_size,
-                chunk_overlap=self.chunk_overlap
-            )
+            # text_splitter = RecursiveCharacterTextSplitter(
+            #     chunk_size=self.chunk_size,
+            #     chunk_overlap=self.chunk_overlap
+            # )
+            
             logger.info("Creating embeddings")
             embeddings = UpstageEmbeddings(
                 api_key=Config.API_KEY,
                 model=Config.EMBEDDING_MODEL
             )
+            # 안전 분할용 splitter (토큰 길이 고려하려면 chunk_size=1500~2000 등)
+            safe_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=0)
+
+            logger.info("Using SemanticChunker with Upstage Embeddings for chunking")
+            semantic_chunker = SemanticChunker(embeddings)
 
             all_split_documents = []
             for file_path in self.file_paths:
                 loader = PyMuPDFLoader(file_path)
                 docs = loader.load()
                 logger.info(f"Loaded {file_path}, splitting documents...")
-                split_docs = text_splitter.split_documents(docs)
+                # split_docs = text_splitter.split_documents(docs)
+                
+                # 1) 먼저 safe split
+                safe_docs = safe_splitter.split_documents(docs)
+
+                # 2) semantic chunker
+                split_docs = semantic_chunker.split_documents(safe_docs)
+
+                # 혹은 split_docs에서 빈 문자열 Document 체크
+                final_docs = [d for d in split_docs if d.page_content.strip()]
+
                 all_split_documents.extend(split_docs)
 
             logger.info("Building FAISS vector store")
