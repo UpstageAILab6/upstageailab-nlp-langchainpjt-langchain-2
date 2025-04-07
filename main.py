@@ -1,7 +1,3 @@
-"""
-Streamlit application for the Labor Management Chatbot.
-Provides a user-friendly interface for interacting with the chatbot.
-"""
 import streamlit as st
 import logging
 from config import Config
@@ -15,12 +11,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class ChatBot:
-    """Core chatbot logic integrating all components."""
-    
-    def __init__(self, vector_store: VectorStoreManager, retriever: Retriever, 
-                 llm_chain: LLMChain, chat_manager: ChatHistoryManager):
-        self.chain = chat_manager.get_chain()
-        self.chat_manager = chat_manager
+    def __init__(self):
+        self.vector_store = VectorStoreManager()
+        self.retriever = Retriever(self.vector_store)
+        self.llm_chain = LLMChain(self.retriever)
+        self.chat_manager = ChatHistoryManager(self.llm_chain)
+        self.chain = self.chat_manager.get_chain()
         self.logger = logger
 
     def get_response(self, question: str) -> str:
@@ -55,11 +51,7 @@ def main():
         try:
             logger.info("Initializing chatbot components")
             Config.validate()
-            vector_store = VectorStoreManager()
-            retriever = Retriever(vector_store)
-            llm_chain = LLMChain(retriever)
-            chat_manager = ChatHistoryManager(llm_chain)
-            st.session_state.chatbot = ChatBot(vector_store, retriever, llm_chain, chat_manager)
+            st.session_state.chatbot = ChatBot()
         except Exception as e:
             st.error(f"챗봇 초기화 실패: {str(e)}")
             logger.error(f"Chatbot initialization failed: {str(e)}")
