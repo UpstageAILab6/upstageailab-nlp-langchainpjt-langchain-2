@@ -7,6 +7,7 @@ from config import Config
 from clean_text import *
 
 
+
 # 로깅 설정
 logger = logging.getLogger(__name__)
 
