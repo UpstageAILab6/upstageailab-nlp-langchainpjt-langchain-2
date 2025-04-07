@@ -36,10 +36,10 @@ def main():
     st.set_page_config(page_title="노무관리 챗봇", layout="wide", initial_sidebar_state="collapsed")
     
     # 제목과 초기화 버튼을 상단에 배치
-    col1, col2 = st.columns([8, 2])
+    col1, col2 = st.columns([8, 2], gap="large", vertical_alignment="bottom")
     with col1:
-        st.title("노무관리 챗봇")
-        st.markdown("2024 노무관리 가이드 북을 기반으로 한 질문-답변 서비스입니다.")
+        st.title("📔노무관리 챗봇")
+        st.markdown("노무관리 가이드 북을 기반으로 한 질문-답변 서비스입니다.")
     with col2:
         if st.button("대화 초기화", key="reset_chat"):
             st.session_state.messages = []
