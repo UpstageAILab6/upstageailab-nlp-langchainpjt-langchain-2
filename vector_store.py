@@ -6,6 +6,7 @@ import logging
 from config import Config
 import re
 
+
 # 로깅 설정
 logger = logging.getLogger(__name__)
 
