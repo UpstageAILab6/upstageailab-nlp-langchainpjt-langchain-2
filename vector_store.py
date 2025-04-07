@@ -2,6 +2,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyMuPDFLoader
 from langchain_community.vectorstores import FAISS
 from langchain_upstage import UpstageEmbeddings
+from langchain_experimental.text_splitter import SemanticChunker
 import logging
 from config import Config
 
@@ -50,22 +51,27 @@ class VectorStoreManager:
         try:
             logger.info(f"Loading document from {self.file_paths}")
 
-            text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=self.chunk_size,
-                chunk_overlap=self.chunk_overlap
-            )
+            # text_splitter = RecursiveCharacterTextSplitter(
+            #     chunk_size=self.chunk_size,
+            #     chunk_overlap=self.chunk_overlap
+            # )
+            
             logger.info("Creating embeddings")
             embeddings = UpstageEmbeddings(
                 api_key=Config.API_KEY,
                 model=Config.EMBEDDING_MODEL
             )
 
+            logger.info("Using SemanticChunker with Upstage Embeddings for chunking")
+            semantic_chunker = SemanticChunker(embeddings)
+            
             all_split_documents = []
             for file_path in self.file_paths:
                 loader = PyMuPDFLoader(file_path)
                 docs = loader.load()
                 logger.info(f"Loaded {file_path}, splitting documents...")
-                split_docs = text_splitter.split_documents(docs)
+                # split_docs = text_splitter.split_documents(docs)
+                split_docs = semantic_chunker.split_documents(docs)
                 all_split_documents.extend(split_docs)
 
             logger.info("Building FAISS vector store")
