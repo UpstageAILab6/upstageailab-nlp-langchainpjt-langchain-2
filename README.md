@@ -103,28 +103,19 @@ streamlit run main.py
 프로젝트 진행 중 담당 강사님과의 피드백 세션을 통해 얻은 주요 인사이트는 다음과 같습니다.
 
 ### 📌 **1차 피드백 (2025.04.03)**
-- **주제 선정**  
-  → 도메인 분기 기반 Q&A라는 주제의 명확성 확보 및 활용도 고려
-- **데이터 Chunking 전략**  
-  → 텍스트의 의미 단위로 나누는 전략 필요성 제시
-- **Embedding DB 구성 초기 설계**  
-  → 단일 Vector Store가 아닌 도메인별 벡터 저장소 구성 제안
+- **더 나은 vector_store**  
+  → 초보가 하기에는 오프라인에도 저장할 수 있는 FAISS가 쉽고 좋음.
+- **전체적인 이해도 점검**  
+  → 전체적인 이해도 점검 및 추가적인 공부자료 제시
 
 ### 📌 **2차 피드백 (2025.04.04)**
-- **Embedding DB 구성 고도화**  
-  → 유연한 검색을 위한 필터링 및 메타데이터 설계 강조
-- **실행 가능 코드 구성**  
-  → 짧은 시간 내 프로토타입 수준의 실행 가능한 구조 완성 제안
+- **PDFLoader 표 추출**  
+  → 전처리나 좋은 PDFLoader를 통해 좋게 표를 추출할 필요성 강조
+- **추가 기능 도입**  
+  → Ground Check나 BM25의 중요성 강조
 
 ### 📌 **3차 피드백 (2025.04.07)**
-- **벡터 DB 다양화**  
-  → FAISS 외에도 Qdrant, Milvus 등 비교 실험 제안
-- **System Message Prompting**  
-  → 프롬프트 설계 시 시스템 메시지를 활용해 문맥 유지 유도
-- **Routing 전략 정교화**  
-  → 질문의 도메인 분기를 좀 더 유연하게 처리하는 함수 설계 필요
-- **응답 품질 요소 제안**  
-  - **답변 길이 조절**: 질문 맥락에 맞는 길이로 최적화 필요  
-  - **Ground Check 도입**: UpstageAI의 CAG 기반 평가 방법 참조  
-    - [CAG_GC Notebook](https://github.com/UpstageAI/cookbook/blob/main/Solar-Fullstack-LLM-101/04_CAG_GC.ipynb) 활용 권장  
-    - 실제 응답과 Ground Truth 비교를 통한 평가 체계 수립
+- **Retriever 추가**  
+  → bm25와 Faiss를 결합한 hybrid Retriever가 필요
+- **Chunking**  
+  → Recursive Chunking의 기본 성능이 워낙 뛰어나기 때문에 Sementic Chunking의 경우 비용에 비해 더 뛰어난 점을 느끼기 힘듬
