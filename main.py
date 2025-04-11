@@ -1,19 +1,4 @@
 import chat_history
-<<<<<<< HEAD
-
-if __name__ == "__main__":
-    while True:
-        # 실행할 질문
-        question = input("입력: ")
-
-        # RAG 실행
-        response = chat_history.chain_with_history.invoke(
-            {"question": question},
-            config={"configurable": {"session_id": "rag123"}},
-        )
-
-        print(response)
-=======
 import llm
 import vector_store
 from dotenv import load_dotenv
@@ -45,4 +30,3 @@ def main():
 if __name__ == "__main__":
     main()
     
->>>>>>> bfe289e (add function base code)

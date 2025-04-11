@@ -15,17 +15,6 @@ def get_session_history(session_id):
         store[session_id] = ChatMessageHistory()
     return store[session_id]  # 해당 세션 ID에 대한 세션 기록 반환
 
-<<<<<<< HEAD
-
-chain_with_history = RunnableWithMessageHistory(
-    llm.chain,
-    get_session_history,  # 세션 기록을 가져오는 함수
-    input_messages_key="question",  # 사용자의 질문이 템플릿 변수에 들어갈 key
-    history_messages_key="chat_history",  # 기록 메시지의 키
-)
-
-__all__ = ["chain_with_history"]
-=======
 def get_chain_with_history(chain):
     # 세션 ID를 생성합니다.
     session_id = "session_1"  # 예시로 고정된 세션 ID 사용
@@ -44,4 +33,3 @@ def get_chain_with_history(chain):
     )
     
     return chain_with_history
->>>>>>> bfe289e (add function base code)
